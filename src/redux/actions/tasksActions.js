@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const url = 'http://192.168.1.116:5000/tasks';
+const url = 'http://192.168.1.18:5000/tasks';
 
 // REDUX CALLS
 
@@ -72,41 +72,59 @@ export const filterTasks = (filter, keyword = '') => ({
 
 export const fetchTasks = () => dispatch => {
 	dispatch(fetchLoading());
-	axios
-		.get(url + '/all', { mode: 'cors' })
-		.then(response => {
-			dispatch(setTasks(response.data));
-			dispatch(fetchDone());
-		})
-		.catch(error => {
-			console.error(error);
-			dispatch(fetchDone());
-		});
+	setTimeout(
+		() =>
+			axios
+				.get(url + '/all', { mode: 'cors' })
+				.then(response => {
+					dispatch(setTasks(response.data));
+					dispatch(fetchDone());
+				})
+				.catch(error => {
+					console.error(error);
+					dispatch(fetchDone());
+				}),
+		1500
+	);
 };
 
 export const fetchAddTask = (content, name) => dispatch => {
-	axios
-		.post(url, {
-			name,
-			content
-		})
-		.then(response => {
-			dispatch(addTask(response.data));
-		})
-		.catch(error => {
-			console.error(error);
-		});
+	dispatch(fetchLoading());
+	setTimeout(
+		() =>
+			axios
+				.post(url, {
+					name,
+					content
+				})
+				.then(response => {
+					dispatch(addTask(response.data));
+					dispatch(fetchDone());
+				})
+				.catch(error => {
+					console.error(error);
+					dispatch(fetchDone());
+				}),
+		1500
+	);
 };
 
 export const fetchDeleteTask = id => dispatch => {
-	axios
-		.delete(url + '/' + id)
-		.then(response => {
-			dispatch(deleteTask(response.data));
-		})
-		.catch(error => {
-			console.error(error);
-		});
+	dispatch(fetchLoading());
+	setTimeout(
+		() =>
+			axios
+				.delete(url + '/' + id)
+				.then(response => {
+					dispatch(deleteTask(response.data));
+					dispatch(fetchDone());
+				})
+				.catch(error => {
+					console.error(error);
+					dispatch(fetchDone());
+				}),
+		1500
+	);
 };
 
 export const fetchToggleTaskDone = id => dispatch => {
